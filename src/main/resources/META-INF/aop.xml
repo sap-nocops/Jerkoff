@@ -1,0 +1,10 @@
+<aspectj>
+    <aspects>
+        <aspect name="prova.aspect.ProvaAspect"/>
+    </aspects>
+
+    <weaver options="-verbose">
+        <include within="prova.*"/>
+    </weaver>
+</aspectj>
+

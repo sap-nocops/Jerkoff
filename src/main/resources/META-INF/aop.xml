@@ -1,10 +1,14 @@
 <aspectj>
+	<!-- aspect Jerkoff -->
     <aspects>
         <aspect name="it.fratta.jerkoff.aspect.ProvaAspect"/>
     </aspects>
-
+    
+    <!-- inserire i package da testare -->
+	<include within="it.fratta.jerkoff.test.*"/>
+	
     <weaver options="-verbose">
-        <include within="it.fratta.jerkoff.*"/>
+        <include within="it.fratta.jerkoff.test.*"/>
     </weaver>
 </aspectj>
 

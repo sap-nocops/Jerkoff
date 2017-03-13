@@ -22,7 +22,7 @@ public class ProvaAspect {
 	 * @param pjp
 	 * @throws Throwable
 	 */
-	@Around(value = "execution ( public *prova* *(..))")
+	@Around(value = "execution ( public * *(..))")
 	public Object log(ProceedingJoinPoint pjp) throws Throwable {
 		LOG.info("-------------------------");
 		LOG.info("ProvaAspect.log() called on " + pjp);

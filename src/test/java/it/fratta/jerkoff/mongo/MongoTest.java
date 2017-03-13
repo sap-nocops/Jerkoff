@@ -1,13 +1,14 @@
 /**
  * 
  */
-package test.mongo;
+package it.fratta.jerkoff.mongo;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.bson.Document;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.mongodb.MongoClient;
@@ -32,6 +33,7 @@ public class MongoTest {
 	private static final Logger LOG = Logger.getLogger(MongoTest.class);
 
 	@Test
+	@Ignore
 	public void testInsert() {
 		try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
 			MongoDatabase db = mongoClient.getDatabase("prova");
@@ -70,6 +72,7 @@ public class MongoTest {
 	}
 
 	@Test
+	@Ignore
 	public void testRead() {
 		try (MongoClient mongoClient = new MongoClient("localhost", 27017)) {
 			MongoDatabase db = mongoClient.getDatabase("prova");

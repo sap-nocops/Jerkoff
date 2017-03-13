@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.fratta.jerkoff;
+package it.fratta.jerkoff.test;
 
 /**
  * @author luca

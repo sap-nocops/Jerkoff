@@ -1,10 +1,10 @@
 <aspectj>
     <aspects>
-        <aspect name="prova.aspect.ProvaAspect"/>
+        <aspect name="it.fratta.jerkoff.aspect.ProvaAspect"/>
     </aspects>
 
     <weaver options="-verbose">
-        <include within="prova.*"/>
+        <include within="it.fratta.jerkoff.*"/>
     </weaver>
 </aspectj>
 

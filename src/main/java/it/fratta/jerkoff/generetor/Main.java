@@ -33,7 +33,7 @@ public class Main {
 
 	private static final String BASE_CLASS = "GenericTest";
 
-	private static final String BASE_PACKAGE = "it.fratta.jerkoff";
+	private static final String BASE_PACKAGE = "it.fratta.jerkoff.test";
 
 	private static final String PATH = "src/test/java";
 

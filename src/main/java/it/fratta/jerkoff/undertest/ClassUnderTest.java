@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.fratta.jerkoff;
+package it.fratta.jerkoff.undertest;
 
 import org.apache.log4j.Logger;
 

@@ -5,10 +5,10 @@
     </aspects>
     
     <!-- inserire i package da testare -->
-	<include within="it.fratta.jerkoff.test.*"/>
+	<include within="it.fratta.jerkoff.undertest.*"/>
 	
     <weaver options="-verbose">
-        <include within="it.fratta.jerkoff.test.*"/>
+        <include within="it.fratta.jerkoff.undertest.*"/>
     </weaver>
 </aspectj>
 

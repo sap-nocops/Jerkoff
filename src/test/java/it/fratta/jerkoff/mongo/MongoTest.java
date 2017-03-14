@@ -16,7 +16,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-import it.fratta.jerkoff.ClassUnderTest;
+import it.fratta.jerkoff.undertest.ClassUnderTest;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -58,9 +58,6 @@ public class MongoTest {
 		String res = null;
 		try {
 			LOG.debug("convert: " + value);
-//			ObjectMapper mapper = new ObjectMapper();
-//			mapper.setSerializationInclusion(Include.NON_NULL);
-//			res = mapper.writeValueAsString(value);
 			Gson gson = new Gson();
 			res = gson.toJson(value);
 			LOG.debug("res: " + res);

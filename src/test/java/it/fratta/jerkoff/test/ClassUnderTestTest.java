@@ -3,7 +3,7 @@ package it.fratta.jerkoff.test;
 import org.junit.Before;
 import org.junit.Test;
 
-import it.fratta.jerkoff.ClassUnderTest;
+import it.fratta.jerkoff.undertest.ClassUnderTest;
 
 /**
  * @author 

@@ -23,7 +23,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 
-import it.fratta.jerkoff.ClassUnderTest;
+import it.fratta.jerkoff.undertest.ClassUnderTest;
 
 /**
  * @author luca

@@ -5,6 +5,7 @@ package it.fratta.jerkoff.aspect;
 
 import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 
@@ -26,7 +27,7 @@ public class ProvaAspect {
 	public Object log(ProceedingJoinPoint pjp) throws Throwable {
 		LOG.info("-------------------------");
 		LOG.info("ProvaAspect.log() called on " + pjp);
-		LOG.info("Signature " + pjp.getSignature());
+		LOG.info("Signature " + pjp.getSignature().toLongString());
 		LOG.info("Args " + arrayToString(pjp.getArgs()));
 		LOG.info("Target " + pjp.getTarget());
 		LOG.info("This " + pjp.getThis());

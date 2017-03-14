@@ -31,7 +31,7 @@ public class PojoCreatorUtils {
 		/*
 		 * for non spring test
 		 */
-		MethodSpec methodInitSpec = PojoCreatorUtils.getInitMethodSpec(clazz);
+		MethodSpec methodInitSpec = getInitMethodSpec(clazz);
 		classTestBuilder.addMethod(methodInitSpec);
 		int count = 0;
 		LOG.info("Creating tests for public methods of " + clazz.getSimpleName());
@@ -39,7 +39,7 @@ public class PojoCreatorUtils {
 			if (java.lang.reflect.Modifier.isPublic(method.getModifiers())) {
 				Main.LOG.info("method: " + method);
 				count++;
-				MethodSpec methodSpec = PojoCreatorUtils.getMethodSpec(count, method, clazz);
+				MethodSpec methodSpec = getMethodSpec(count, method, clazz);
 				classTestBuilder.addMethod(methodSpec);
 			}
 		}
@@ -49,7 +49,7 @@ public class PojoCreatorUtils {
 		MethodSpec.Builder methodInitBuilder = MethodSpec.methodBuilder("init");
 		// TODO init object
 		methodInitBuilder.addAnnotation(Before.class)
-				.addStatement(getInstanceVariableName(clazz) + PojoCreatorUtils.getNewInstanceOfWithParameter(clazz, "0"))
+				.addStatement(getInstanceVariableName(clazz) + getNewInstanceOfWithParameter(clazz, "0"))
 				.addModifiers(Modifier.PUBLIC);
 		methodInitBuilder.addJavadoc("\n");
 		return methodInitBuilder.build();
@@ -69,7 +69,7 @@ public class PojoCreatorUtils {
 			expected = "result.equals(0)";
 		}
 		MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(method.getName() + count + Main.TEST);
-		String params = PojoCreatorUtils.getParams(method, methodBuilder);
+		String params = getParams(method, methodBuilder);
 		AnnotationSpec.Builder annSpecBuilder = AnnotationSpec.builder(Test.class);
 		// TODO exception expected
 		// annSpecBuilder.addMember("expected","Exception.class");
@@ -87,7 +87,7 @@ public class PojoCreatorUtils {
 	}
 
 	public static String getNewInstanceOfWithParameter(Class<?> clazz, String parameter) {
-		return PojoCreatorUtils.getNewInstanceOfWithParameters(clazz, new String[]{parameter});
+		return getNewInstanceOfWithParameters(clazz, new String[]{parameter});
 	}
 
 	private static String getNewInstanceOfWithParameters(Class<?> clazz, List<String> parameters) {
@@ -117,12 +117,12 @@ public class PojoCreatorUtils {
 		classTestBuilder.superclass(superClass);
 		classTestBuilder.addJavadoc("@author \n");
 		classTestBuilder.addModifiers(Modifier.PUBLIC);
-		FieldSpec.Builder spec = FieldSpec.builder(clazz, PojoCreatorUtils.getInstanceVariableName(clazz), Modifier.PRIVATE);
+		FieldSpec.Builder spec = FieldSpec.builder(clazz, getInstanceVariableName(clazz), Modifier.PRIVATE);
 		/*
 		 * for spring test --> spec.addAnnotation(Autowired.class);
 		 */
 		classTestBuilder.addField(spec.build());
-		PojoCreatorUtils.addClassMethodsToBuilder(classTestBuilder, clazz);
+		addClassMethodsToBuilder(classTestBuilder, clazz);
 		return classTestBuilder.build();
 	}
 

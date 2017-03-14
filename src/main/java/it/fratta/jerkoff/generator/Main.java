@@ -13,17 +13,16 @@ import org.apache.log4j.Logger;
 import com.google.common.reflect.ClassPath;
 import com.squareup.javapoet.TypeSpec;
 
+import it.fratta.jerkoff.util.Constants;
 import it.fratta.jerkoff.util.PojoCreatorUtils;
 
 /**
  * @author ElGansoSnowhiteDurden
  *
  */
-public class Main {
-
+public class Main implements Constants {
     public static final Logger LOG = Logger.getLogger(Main.class);
-    public static final String TEST = "Test";
-
+    
     /**
      * Deve diventare un maven plugin
      * 

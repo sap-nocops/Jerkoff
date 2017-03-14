@@ -11,18 +11,13 @@ import org.bson.Document;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.google.gson.Gson;
 import com.mongodb.MongoClient;
 import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import it.fratta.jerkoff.undertest.ClassUnderTest;
-
-import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.graph.ElementOrder.Type;
-import com.google.gson.Gson;
 
 /**
  * @author luca

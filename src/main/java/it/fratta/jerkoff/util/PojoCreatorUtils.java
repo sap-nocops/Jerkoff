@@ -95,7 +95,7 @@ public class PojoCreatorUtils {
 	}
 
 	public static String getNewInstanceOfWithParameters(Class<?> clazz, String[] parameters) {
-		return " = new " + clazz.getSimpleName() + "(" + Arrays.toString(parameters) + ")";
+		return " = new " + clazz.getSimpleName() + "(" + Arrays.toString(parameters).replaceAll("\\[", "").replaceAll("\\]", "") + ")";
 	}
 
 	public static String getParams(Method method, MethodSpec.Builder methodBuilder) {

@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 
 import com.squareup.javapoet.TypeSpec;
 
-import it.fratta.jerkoff.ClassUnderTest;
+import it.fratta.jerkoff.undertest.ClassUnderTest;
 import it.fratta.jerkoff.util.PojoCreatorUtils;
 
 /**
@@ -29,7 +29,7 @@ public class Main {
 	 */
 	public static void main(String[] args) {
 		LOG.info("start main");
-		File sourcePath = new File(PATH + SLASH + BASE_PACKAGE.replaceAll("\\.", SLASH));
+		File sourcePath = new File(PATH);
 		Class<?> clazz = ClassUnderTest.class;
 		TypeSpec classTest = PojoCreatorUtils.getTypeSpec(clazz);
 		PojoCreatorUtils.writeJavaFile(sourcePath, clazz, classTest);

@@ -17,7 +17,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
-import it.fratta.jerkoff.ClassUnderTest;
+import it.fratta.jerkoff.undertest.ClassUnderTest;
 
 /**
  * @author luca

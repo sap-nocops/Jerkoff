@@ -32,5 +32,7 @@ public class ClassUnderTest {
 		LOG.info(count);
 	}
 	
-
+	public int getCountPowX(int x) {
+		return (int) Math.pow(getCount(), x);
+	}
 }

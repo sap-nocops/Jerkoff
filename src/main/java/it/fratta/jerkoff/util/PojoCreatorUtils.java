@@ -11,12 +11,10 @@ import javax.lang.model.element.Modifier;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
-import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
@@ -26,13 +24,15 @@ import it.fratta.jerkoff.generator.Main;
 
 public class PojoCreatorUtils {
 	public static final Logger LOG = Logger.getLogger(PojoCreatorUtils.class);
-
+	
+	/**
+     * genera i metodi di test per clazz
+     * 
+     * @param classTestBuilder
+     * @param clazz
+     */
 	public static void addClassMethodsToBuilder(Builder classTestBuilder, Class<?> clazz) {
-		/*
-		 * for non spring test
-		 */
-		MethodSpec methodInitSpec = PojoCreatorUtils.getInitMethodSpec(clazz);
-		classTestBuilder.addMethod(methodInitSpec);
+	    
 		int count = 0;
 		LOG.info("Creating tests for public methods of " + clazz.getSimpleName());
 		for (Method method : clazz.getDeclaredMethods()) {
@@ -45,21 +45,19 @@ public class PojoCreatorUtils {
 		}
 	}
 
-	public static MethodSpec getInitMethodSpec(Class<?> clazz) {
-		MethodSpec.Builder methodInitBuilder = MethodSpec.methodBuilder("init");
-		// TODO init object
-		methodInitBuilder.addAnnotation(Before.class)
-				.addStatement(getInstanceVariableName(clazz) + PojoCreatorUtils.getNewInstanceOfWithParameter(clazz, "0"))
-				.addModifiers(Modifier.PUBLIC);
-		methodInitBuilder.addJavadoc("\n");
-		return methodInitBuilder.build();
-	}
-
 	public static String getInstanceVariableName(Class<?> clazz) {
 		String name = clazz.getSimpleName();
 		return name.toLowerCase().charAt(0) + name.substring(1);
 	}
-
+	
+	/**
+     * genera il metodo di test per method di clazz
+     * 
+     * @param count
+     * @param method
+     * @param clazz
+     * @return
+     */
 	public static MethodSpec getMethodSpec(int count, Method method, Class<?> clazz) {
 		String result = "";
 		String expected = "true";
@@ -69,18 +67,40 @@ public class PojoCreatorUtils {
 			expected = "result.equals(0)";
 		}
 		MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(method.getName() + count + Main.TEST);
+		/*
+         * for non spring test
+         */
+        String invokerName = null;
+        if (java.lang.reflect.Modifier.isStatic(method.getModifiers())) {
+            invokerName = clazz.getSimpleName();
+        } else {
+            newInstance(clazz, methodBuilder);
+            invokerName = getInstanceVariableName(clazz);
+        }
 		String params = PojoCreatorUtils.getParams(method, methodBuilder);
 		AnnotationSpec.Builder annSpecBuilder = AnnotationSpec.builder(Test.class);
 		// TODO exception expected
 		// annSpecBuilder.addMember("expected","Exception.class");
 		AnnotationSpec annTestSpec = annSpecBuilder.build();
 		methodBuilder.addAnnotation(annTestSpec)
-				.addStatement(result + getInstanceVariableName(clazz) + ".$N(" + params + ")", method.getName())
+				.addStatement(result + invokerName + ".$N(" + params + ")", method.getName())
 				.addModifiers(Modifier.PUBLIC);
 		methodBuilder.addStatement("$L.assertTrue(" + expected + ")", Assert.class.getName());
 		methodBuilder.addJavadoc("\n");
 		return methodBuilder.build();
 	}
+	
+	/**
+     * inizializza l'object under test
+     * 
+     * @param clazz
+     * @param methodBuilder
+     */
+    private static void newInstance(Class<?> clazz, MethodSpec.Builder methodBuilder) {
+        // TODO init object
+        methodBuilder.addStatement(clazz.getSimpleName() + " " + getInstanceVariableName(clazz) + " = new "
+                + clazz.getSimpleName() + "(0)");
+    }
 
 	private static String getNewInstanceOfNoParameters(Class<?> clazz) {
 		return getNewInstanceOfWithParameter(clazz, "");
@@ -110,18 +130,25 @@ public class PojoCreatorUtils {
 		}
 		return params;
 	}
-
+	/**
+     * genera classe di test per clazz
+     * 
+     * @param clazz
+     * @return
+     */
 	public static TypeSpec getTypeSpec(Class<?> clazz) {
 		Builder classTestBuilder = TypeSpec.classBuilder(clazz.getSimpleName() + Main.TEST);
 		ClassName superClass = ClassName.get(Main.BASE_PACKAGE, Main.BASE_CLASS);
 		classTestBuilder.superclass(superClass);
 		classTestBuilder.addJavadoc("@author \n");
 		classTestBuilder.addModifiers(Modifier.PUBLIC);
-		FieldSpec.Builder spec = FieldSpec.builder(clazz, PojoCreatorUtils.getInstanceVariableName(clazz), Modifier.PRIVATE);
 		/*
-		 * for spring test --> spec.addAnnotation(Autowired.class);
-		 */
-		classTestBuilder.addField(spec.build());
+         * for spring test
+         */
+        // FieldSpec.Builder spec = FieldSpec.builder(clazz,
+        // getNewInstanceOfNoParameters(clazz), Modifier.PRIVATE);
+        // spec.addAnnotation(Autowired.class);
+        // classTestBuilder.addField(spec.build());
 		PojoCreatorUtils.addClassMethodsToBuilder(classTestBuilder, clazz);
 		return classTestBuilder.build();
 	}

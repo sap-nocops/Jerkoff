@@ -4,7 +4,7 @@
 package it.fratta.jerkoff.test;
 
 /**
- * @author luca
+ * @author ElGansoSnowhiteDurden
  *
  */
 public class GenericTest {

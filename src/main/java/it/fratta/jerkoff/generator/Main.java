@@ -13,7 +13,7 @@ import it.fratta.jerkoff.undertest.ClassUnderTest;
 import it.fratta.jerkoff.util.PojoCreatorUtils;
 
 /**
- * @author luca
+ * @author ElGansoSnowhiteDurden
  *
  */
 public class Main {

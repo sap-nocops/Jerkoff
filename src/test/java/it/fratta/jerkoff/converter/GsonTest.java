@@ -24,7 +24,7 @@ import com.google.gson.JsonSerializer;
 import com.google.gson.reflect.TypeToken;
 
 /**
- * @author luca
+ * @author ElGansoSnowhiteDurden
  *
  */
 public class GsonTest {

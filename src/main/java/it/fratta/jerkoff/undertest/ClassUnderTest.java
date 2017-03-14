@@ -6,7 +6,7 @@ package it.fratta.jerkoff.undertest;
 import org.apache.log4j.Logger;
 
 /**
- * @author luca
+ * @author ElGansoSnowhiteDurden
  *
  */
 public class ClassUnderTest {

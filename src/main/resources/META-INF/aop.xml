@@ -1,7 +1,7 @@
 <aspectj>
 	<!-- aspect Jerkoff -->
     <aspects>
-        <aspect name="it.fratta.jerkoff.aspect.ProvaAspect"/>
+        <aspect name="it.fratta.jerkoff.aspect.LearningAspect"/>
     </aspects>
     
     <!-- inserire i package da testare -->

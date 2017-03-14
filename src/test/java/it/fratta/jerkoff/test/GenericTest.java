@@ -4,7 +4,9 @@
 package it.fratta.jerkoff.test;
 
 /**
- * @author luca
+ * @author ElGansoSnowhiteDurden
+ * 
+ * classe per la configurazione generica dei test
  *
  */
 public class GenericTest {

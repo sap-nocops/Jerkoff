@@ -20,7 +20,7 @@ import com.mongodb.client.MongoDatabase;
 import it.fratta.jerkoff.undertest.ClassUnderTest;
 
 /**
- * @author luca
+ * @author ElGansoSnowhiteDurden
  *
  */
 public class MongoTest {

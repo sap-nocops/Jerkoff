@@ -5,7 +5,6 @@ package it.fratta.jerkoff.generator;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
@@ -15,6 +14,7 @@ import com.squareup.javapoet.TypeSpec;
 
 import it.fratta.jerkoff.util.Constants;
 import it.fratta.jerkoff.util.PojoCreatorUtils;
+import it.fratta.jerkoff.util.Utils;
 
 /**
  * @author ElGansoSnowhiteDurden
@@ -31,9 +31,7 @@ public class Main implements Constants {
      */
     public static void main(String[] args) throws IOException {
         LOG.info("start main");
-        InputStream propertiesIs = Main.class.getClassLoader().getResourceAsStream("META-INF/generator.properties");
-        Properties prop = new Properties();
-        prop.load(propertiesIs);
+        Properties prop = Utils.loadProperties("META-INF/generator.properties");
         LOG.info("Scan package: " + prop.getProperty("gen.packageToScan"));
         ClassPath classpath = ClassPath.from(Main.class.getClassLoader()); 
         File sourcePath = new File( prop.getProperty("gen.targetFolder"));

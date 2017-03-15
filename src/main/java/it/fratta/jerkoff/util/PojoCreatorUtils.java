@@ -13,6 +13,7 @@ import javax.annotation.Generated;
 import javax.lang.model.element.Modifier;
 
 import org.apache.log4j.Logger;
+import org.bson.Document;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -43,16 +44,17 @@ public class PojoCreatorUtils {
 	 */
 	public static void addClassMethodsToBuilder(Builder classTestBuilder, Class<?> clazz, Properties prop) {
 		int count = 0;
+		MongoDBUtils mongo = new MongoDBUtils(prop);
 		LOG.info("Creating tests for public methods of " + clazz.getSimpleName());
 		for (Method method : clazz.getDeclaredMethods()) {
 			if (java.lang.reflect.Modifier.isPublic(method.getModifiers())) {
 				Main.LOG.info("app: " + prop.getProperty("appName") + " - method: " + method);
 				count++;
-				/*
-				 * TODO: find on MongoDB collection appName with
-				 * method.toString() foreach result call getMethodSpec
-				 */
-				Object infoFromMongoDb = null;
+				for (Document doc : mongo.find(prop.getProperty("appName"), method.toString())) {
+					LOG.debug("document: " + doc);
+					//TODO
+				}
+				Document infoFromMongoDb = null;
 				MethodSpec methodSpec = getMethodSpec(count, method, clazz, infoFromMongoDb);
 				classTestBuilder.addMethod(methodSpec);
 			}
@@ -79,7 +81,7 @@ public class PojoCreatorUtils {
 	 * @param infoFromMongoDb
 	 * @return
 	 */
-	public static MethodSpec getMethodSpec(int count, Method method, Class<?> clazz, Object infoFromMongoDb) {
+	public static MethodSpec getMethodSpec(int count, Method method, Class<?> clazz, Document infoFromMongoDb) {
 		String result = getAssignmentOfMethodResult(method);
 		String expected = getExpectedResultAsBooleanAssert(method);
 		MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(method.getName() + count + Constants.TEST);
@@ -112,7 +114,7 @@ public class PojoCreatorUtils {
 	 * @param methodBuilder
 	 * @return
 	 */
-	private static String getInvokerName(Method method, Class<?> clazz, Object infoFromMongoDb,
+	private static String getInvokerName(Method method, Class<?> clazz, Document infoFromMongoDb,
 			MethodSpec.Builder methodBuilder) {
 		if (java.lang.reflect.Modifier.isStatic(method.getModifiers())) {
 			return clazz.getSimpleName();
@@ -164,7 +166,7 @@ public class PojoCreatorUtils {
 	 * @param methodBuilder
 	 * @param infoFromMongoDb
 	 */
-	private static void newInstance(Class<?> clazz, MethodSpec.Builder methodBuilder, Object infoFromMongoDb) {
+	private static void newInstance(Class<?> clazz, MethodSpec.Builder methodBuilder, Document infoFromMongoDb) {
 		/*
 		 * TODO init object with infoFromMongoDb
 		 */
@@ -242,7 +244,7 @@ public class PojoCreatorUtils {
 	 * @param infoFromMongoDb
 	 * @return
 	 */
-	public static String getParams(Method method, MethodSpec.Builder methodBuilder, Object infoFromMongoDb) {
+	public static String getParams(Method method, MethodSpec.Builder methodBuilder, Document infoFromMongoDb) {
 		String params = "";
 		for (Parameter parameter : method.getParameters()) {
 			params += "," + parameter.getName();

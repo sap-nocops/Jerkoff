@@ -6,6 +6,11 @@ import java.util.Properties;
 
 import it.fratta.jerkoff.generator.Main;
 
+/**
+ * 
+ * @author sap-nocops
+ *
+ */
 public interface Utils {
 	static Properties loadProperties(String propertyFileName) throws IOException {
 		InputStream propertiesIs = Main.class.getClassLoader().getResourceAsStream(propertyFileName);

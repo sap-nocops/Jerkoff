@@ -1,0 +1,14 @@
+<aspectj>
+	<!-- aspect Jerkoff -->
+    <aspects>
+        <aspect name="it.fratta.jerkoff.aspect.LearningAspect"/>
+    </aspects>
+    
+    <!-- inserire i package da testare -->
+	<include within="com.program.to.test.*"/>
+	
+    <weaver options="-verbose">
+        <include within="com.program.to.test.*"/>
+    </weaver>
+</aspectj>
+

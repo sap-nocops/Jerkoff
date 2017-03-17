@@ -14,6 +14,8 @@ import org.apache.maven.plugins.annotations.Mojo;
 import com.google.common.reflect.ClassPath;
 import com.squareup.javapoet.TypeSpec;
 
+import it.fratta.jerkoff.mongo.MongoDBDao;
+import it.fratta.jerkoff.mongo.impl.MongoDBDaoImpl;
 import it.fratta.jerkoff.util.PojoCreatorUtils;
 import it.fratta.jerkoff.util.PropertiesUtils;
 
@@ -37,11 +39,12 @@ public class Main extends AbstractMojo {
 			getLog().info("Scan package: " + packageToScan);
 			ClassPath classpath = ClassPath.from(Main.class.getClassLoader());
 			File sourcePath = new File(PropertiesUtils.getRequiredProperty(prop, PropertiesUtils.TARGET_FOLDER));
+			MongoDBDao mongo = new MongoDBDaoImpl(prop);
 			for (ClassPath.ClassInfo classInfo : classpath
 					.getTopLevelClassesRecursive(packageToScan)) {
 				Class<?> clazz = classInfo.load();
 				getLog().info("Creating tests for class " + clazz.getSimpleName());
-				TypeSpec classTest = PojoCreatorUtils.getTypeSpec(clazz, prop);
+				TypeSpec classTest = PojoCreatorUtils.getTypeSpec(clazz, prop, mongo);
 				PojoCreatorUtils.writeJavaFile(sourcePath, clazz, classTest);
 			}
 		} catch (IOException e) {

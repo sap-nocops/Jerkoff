@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import javax.annotation.PreDestroy;
+
 import org.apache.log4j.Logger;
 import org.bson.Document;
 
@@ -26,6 +28,7 @@ public class MongoDBDaoImpl implements MongoDBDao {
 	private String databaseName;
 	private String host;
 	private int port;
+	private MongoClient mongoClient;
 
 	/**
 	 * @param prop
@@ -35,12 +38,12 @@ public class MongoDBDaoImpl implements MongoDBDao {
 		databaseName = PropertiesUtils.getRequiredProperty(prop, PropertiesUtils.MONGO_DB);
 		host = PropertiesUtils.getRequiredProperty(prop, PropertiesUtils.MONGO_HOST);
 		port = PropertiesUtils.getRequiredIntProperty(prop, PropertiesUtils.MONGO_PORT);
+		mongoClient = new MongoClient(host, port);
 	}
 
 	@Override
 	public void insert(String collection, Map<String, Object> map) {
-		// TODO Probably connection must be handled better
-		try (MongoClient mongoClient = new MongoClient(host, port)) {
+		try {
 			LOG.info("Inserting document");
 			MongoDatabase db = mongoClient.getDatabase(databaseName);
 			MongoCollection<Document> coll = db.getCollection(collection);
@@ -56,8 +59,7 @@ public class MongoDBDaoImpl implements MongoDBDao {
 	@Override
 	public List<Document> find(String collection, String signature) {
 		List<Document> res = new ArrayList<Document>();
-		// TODO Probably connection must be handled better
-		try (MongoClient mongoClient = new MongoClient(host, port)) {
+		try {
 			MongoDatabase db = mongoClient.getDatabase(databaseName);
 			MongoCollection<Document> coll = db.getCollection(collection);
 			BasicDBObject searchQuery = new BasicDBObject();
@@ -70,6 +72,11 @@ public class MongoDBDaoImpl implements MongoDBDao {
 			LOG.error(e);
 		}
 		return res;
+	}
+	
+	@PreDestroy
+	private void close() {
+		mongoClient.close();
 	}
 
 }

@@ -13,6 +13,8 @@ import org.junit.Test;
 import com.program.to.test.ClassUnderTest;
 import com.squareup.javapoet.TypeSpec;
 
+import it.fratta.jerkoff.mongo.MongoDBDao;
+import it.fratta.jerkoff.mongo.impl.MongoDBDaoImpl;
 import it.fratta.jerkoff.util.PojoCreatorUtils;
 import it.fratta.jerkoff.util.PropertiesUtils;
 
@@ -29,8 +31,9 @@ public class MainTest {
 		Properties prop = PropertiesUtils.loadProperties("META-INF/generator.properties");
 		File sourcePath = new File(prop.getProperty("gen.targetFolder"));
 		Class<?> clazz = ClassUnderTest.class;
+		MongoDBDao mongo = new MongoDBDaoImpl(prop);
 		LOG.info("Creating tests for public methods of " + clazz.getSimpleName());
-		TypeSpec classTest = PojoCreatorUtils.getTypeSpec(clazz, prop);
+		TypeSpec classTest = PojoCreatorUtils.getTypeSpec(clazz, prop, mongo);
 		PojoCreatorUtils.writeJavaFile(sourcePath, clazz, classTest);
 	}
 

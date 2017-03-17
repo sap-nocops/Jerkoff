@@ -9,14 +9,24 @@ import org.junit.Test;
  */
 @Generated(
     value = "it.fratta.jerkoff.Generator",
-    date = "Fri Mar 17 00:42:48 CET 2017"
+    date = "Fri Mar 17 01:22:50 CET 2017"
 )
 public class ClassUnderTestTest extends GenericTest {
   /**
    *
    */
   @Test
-  public void getCountPowX1Test() {
+  public void getCount1Test() {
+    ClassUnderTest classUnderTest = new ClassUnderTest(0);
+    java.lang.Integer result = classUnderTest.getCount();
+    org.junit.Assert.assertTrue(result.equals(0));
+  }
+
+  /**
+   *
+   */
+  @Test
+  public void getCountPowX2Test() {
     ClassUnderTest classUnderTest = new ClassUnderTest(0);
     int arg0 = 1;
     int result = classUnderTest.getCountPowX(arg0);
@@ -27,20 +37,10 @@ public class ClassUnderTestTest extends GenericTest {
    *
    */
   @Test
-  public void staticPrint2Test() {
+  public void staticPrint3Test() {
     java.lang.Integer arg0 = 1;
     ClassUnderTest.staticPrint(arg0);
     org.junit.Assert.assertTrue(true);
-  }
-
-  /**
-   *
-   */
-  @Test
-  public void getCount3Test() {
-    ClassUnderTest classUnderTest = new ClassUnderTest(0);
-    java.lang.Integer result = classUnderTest.getCount();
-    org.junit.Assert.assertTrue(result.equals(0));
   }
 
   /**

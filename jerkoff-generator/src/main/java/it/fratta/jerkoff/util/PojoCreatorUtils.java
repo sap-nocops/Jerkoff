@@ -24,7 +24,7 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeSpec.Builder;
 
-import it.fratta.jerkoff.mongo.impl.MongoDBDaoImpl;
+import it.fratta.jerkoff.mongo.MongoDBDao;
 
 /**
  * 
@@ -43,10 +43,10 @@ public class PojoCreatorUtils {
 	 * @param classTestBuilder
 	 * @param clazz
 	 * @param prop
+	 * @param mongo 
 	 */
-	public static void addClassMethodsToBuilder(Builder classTestBuilder, Class<?> clazz, Properties prop) {
+	public static void addClassMethodsToBuilder(Builder classTestBuilder, Class<?> clazz, Properties prop, MongoDBDao mongo) {
 		int count = 0;
-		MongoDBDaoImpl mongo = new MongoDBDaoImpl(prop);
 		String appName = PropertiesUtils.getRequiredProperty(prop, PropertiesUtils.APP_NAME);
 		for (Method method : clazz.getDeclaredMethods()) {
 			if (java.lang.reflect.Modifier.isPublic(method.getModifiers())) {
@@ -266,9 +266,10 @@ public class PojoCreatorUtils {
 	 * 
 	 * @param clazz
 	 * @param prop
+	 * @param mongo 
 	 * @return
 	 */
-	public static TypeSpec getTypeSpec(Class<?> clazz, Properties prop) {
+	public static TypeSpec getTypeSpec(Class<?> clazz, Properties prop, MongoDBDao mongo) {
 		Builder classTestBuilder = TypeSpec.classBuilder(clazz.getSimpleName() + TEST);
 		ClassName superClass = ClassName.get(
 				PropertiesUtils.getRequiredProperty(prop, PropertiesUtils.TEST_BASE_PACKAGE),
@@ -288,7 +289,7 @@ public class PojoCreatorUtils {
 		// getNewInstanceOfNoParameters(clazz), Modifier.PRIVATE);
 		// spec.addAnnotation(Autowired.class);
 		// classTestBuilder.addField(spec.build());
-		addClassMethodsToBuilder(classTestBuilder, clazz, prop);
+		addClassMethodsToBuilder(classTestBuilder, clazz, prop, mongo);
 		return classTestBuilder.build();
 	}
 

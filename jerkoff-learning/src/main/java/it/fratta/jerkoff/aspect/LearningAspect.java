@@ -64,7 +64,7 @@ public class LearningAspect {
 			mongo.insert(appName, map);
 			return returnValue;
 		} catch (Throwable e) {
-			after(map, pjp, Optional.absent(), Optional.of(e));
+			after(map, pjp, Optional.absent(), Optional.of(e.getClass().getName()));
 			mongo.insert(appName, map);
 			throw e;
 		}
@@ -89,7 +89,7 @@ public class LearningAspect {
 	 * @return
 	 */
 	private void after(Map<String, Object> map, ProceedingJoinPoint pjp, Optional<Object> returnValue,
-			Optional<Throwable> ex) {
+			Optional<String> ex) {
 		map.put("argsAfter", converter.objectToJsonString(pjp.getArgs()));
 		map.put("thisAfter", converter.objectToJsonString(pjp.getThis()));
 		map.put("targetAfter", converter.objectToJsonString(pjp.getTarget()));

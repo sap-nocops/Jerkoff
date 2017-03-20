@@ -12,7 +12,6 @@ import org.apache.log4j.Logger;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Pointcut;
 
 import com.google.common.base.Optional;
 
@@ -63,7 +62,7 @@ public class LearningAspect {
         try {
             ok = ok && before(map, pjp);
             Object returnValue = pjp.proceed();
-            Optional<Throwable> e = Optional.absent();
+            Optional<String> e = Optional.absent();
             ok = ok && after(map, pjp, Optional.fromNullable(returnValue), e);
             if (ok) {
                 mongo.insert(appName, map);

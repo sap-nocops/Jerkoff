@@ -51,6 +51,8 @@ public class GsonTest {
 			LOG.info("str: " + str);
 			String[] arrayStr = gson.fromJson("[\"abc\"]", String[].class);
 			LOG.info("arrayStr: " + arrayStr);
+			
+			LOG.info("ex: " + new IllegalAccessError().getClass().getName());
 
 			Object object = new Object();
             String json = gson.toJson(object);

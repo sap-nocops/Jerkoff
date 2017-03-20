@@ -70,7 +70,7 @@ public class LearningAspect {
             }
             return returnValue;
         } catch (Throwable e) {
-            ok = ok && after(map, pjp, Optional.absent(), Optional.of(e));
+            ok = ok && after(map, pjp, Optional.absent(), Optional.of(e.getClass().getName()));
             if (ok) {
                 mongo.insert(appName, map);
             }
@@ -104,7 +104,7 @@ public class LearningAspect {
      * @return
      */
     private boolean after(Map<String, Object> map, ProceedingJoinPoint pjp,
-            Optional<Object> returnValue, Optional<Throwable> ex) {
+            Optional<Object> returnValue, Optional<String> ex) {
         boolean ok = true;
         try {
             map.put("argsAfter", converter.objectToJsonString(pjp.getArgs()));

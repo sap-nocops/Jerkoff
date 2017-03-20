@@ -46,12 +46,12 @@ public class ObjectSerializer implements JsonSerializer<Object> {
 			elem = gson.toJsonTree(src);
 			if (elem.isJsonObject()) {
 				JsonObject obj = elem.getAsJsonObject();
-				obj.addProperty("class", typeOfSrc.getTypeName());
+				obj.addProperty("class", ((Class<?>)typeOfSrc).getName());
 				elem = obj;
 			} else {
 				JsonObject obj = new JsonObject();
 				obj.add("value", elem);
-				obj.addProperty("class", typeOfSrc.getTypeName());
+				obj.addProperty("class", ((Class<?>)typeOfSrc).getName());
 				obj.addProperty("primitive", true);
 				elem = obj;
 			}

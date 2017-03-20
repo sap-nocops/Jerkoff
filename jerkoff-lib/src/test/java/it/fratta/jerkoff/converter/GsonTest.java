@@ -52,8 +52,14 @@ public class GsonTest {
 			String[] arrayStr = gson.fromJson("[\"abc\"]", String[].class);
 			LOG.info("arrayStr: " + arrayStr);
 
+			Object object = new Object();
+            String json = gson.toJson(object);
+            LOG.info("json: " + json);
+            Object object2 = gson.fromJson(json, Object.class);
+            LOG.info("object2: " + object2);
+			
 			BagOfPrimitives obj = new BagOfPrimitives();
-			String json = gson.toJson(obj);
+			json = gson.toJson(obj);
 			LOG.info("json: " + json);
 			BagOfPrimitives obj2 = gson.fromJson(json, BagOfPrimitives.class);
 			LOG.info("obj2: " + obj2);
@@ -237,12 +243,12 @@ public class GsonTest {
 				elem = gson.toJsonTree(src);
 				if (elem.isJsonObject()) {
 					JsonObject obj = elem.getAsJsonObject();
-					obj.addProperty("class", typeOfSrc.getTypeName());
+					obj.addProperty("class", ((Class<?>)typeOfSrc).getName());
 					elem = obj;
 				} else {
 					JsonObject obj = new JsonObject();
 					obj.add("value", elem);
-					obj.addProperty("class", typeOfSrc.getTypeName());
+					obj.addProperty("class", ((Class<?>)typeOfSrc).getName());
 					obj.addProperty("primitive", true);
 					elem = obj;
 				}

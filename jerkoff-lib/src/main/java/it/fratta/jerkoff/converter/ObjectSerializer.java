@@ -32,7 +32,7 @@ public class ObjectSerializer implements JsonSerializer<Object> {
 		JsonElement elem = null;
 		if (Iterable.class.isAssignableFrom(src.getClass())) {
 			JsonArray array = new JsonArray();
-			for (Object obj : (Iterable) src) {
+			for (Object obj : (Iterable<?>) src) {
 				array.add(context.serialize(obj));
 			}
 			elem = array;

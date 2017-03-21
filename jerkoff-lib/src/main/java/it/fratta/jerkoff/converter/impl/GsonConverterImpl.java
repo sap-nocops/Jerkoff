@@ -13,7 +13,6 @@ import com.google.gson.GsonBuilder;
 import it.fratta.jerkoff.converter.Converter;
 import it.fratta.jerkoff.converter.ObjectDeserializer;
 import it.fratta.jerkoff.converter.ObjectSerializer;
-import it.fratta.jerkoff.mongo.impl.MongoDBDaoImpl;
 import it.fratta.jerkoff.util.LogUtils;
 
 /**

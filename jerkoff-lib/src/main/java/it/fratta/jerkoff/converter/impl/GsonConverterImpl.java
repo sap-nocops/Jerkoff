@@ -3,6 +3,8 @@
  */
 package it.fratta.jerkoff.converter.impl;
 
+import java.util.Properties;
+
 import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
@@ -11,6 +13,8 @@ import com.google.gson.GsonBuilder;
 import it.fratta.jerkoff.converter.Converter;
 import it.fratta.jerkoff.converter.ObjectDeserializer;
 import it.fratta.jerkoff.converter.ObjectSerializer;
+import it.fratta.jerkoff.mongo.impl.MongoDBDaoImpl;
+import it.fratta.jerkoff.util.LogUtils;
 
 /**
  * @author ElGansoSnowhiteDurden
@@ -18,14 +22,16 @@ import it.fratta.jerkoff.converter.ObjectSerializer;
  */
 public class GsonConverterImpl implements Converter {
 	
-	public static final Logger LOG = Logger.getLogger(GsonConverterImpl.class);
+	public static Logger LOG;
 
 	private Gson gson;
 
 	/**
+	 * @param prop 
 	 * 
 	 */
-	public GsonConverterImpl() {
+	public GsonConverterImpl(Properties prop) {
+	    LOG = LogUtils.getLogger(prop, GsonConverterImpl.class);
 		GsonBuilder gsonBuilder = new GsonBuilder();
 		// register custom adapter from configuration
 		gsonBuilder.registerTypeHierarchyAdapter(Object.class, new ObjectSerializer(gsonBuilder.create()));

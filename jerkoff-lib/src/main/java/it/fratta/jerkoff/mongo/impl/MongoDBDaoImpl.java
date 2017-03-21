@@ -16,6 +16,7 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 
 import it.fratta.jerkoff.mongo.MongoDBDao;
+import it.fratta.jerkoff.util.LogUtils;
 import it.fratta.jerkoff.util.PropertiesUtils;
 
 /**
@@ -24,7 +25,7 @@ import it.fratta.jerkoff.util.PropertiesUtils;
  *
  */
 public class MongoDBDaoImpl implements MongoDBDao {
-	private static final Logger LOG = Logger.getLogger(MongoDBDaoImpl.class);
+	private static Logger LOG;
 	private String databaseName;
 	private String host;
 	private int port;
@@ -35,6 +36,7 @@ public class MongoDBDaoImpl implements MongoDBDao {
 	 * 
 	 */
 	public MongoDBDaoImpl(Properties prop) {
+	    LOG = LogUtils.getLogger(prop, MongoDBDaoImpl.class);
 		databaseName = PropertiesUtils.getRequiredProperty(prop, PropertiesUtils.MONGO_DB);
 		host = PropertiesUtils.getRequiredProperty(prop, PropertiesUtils.MONGO_HOST);
 		port = PropertiesUtils.getRequiredIntProperty(prop, PropertiesUtils.MONGO_PORT);

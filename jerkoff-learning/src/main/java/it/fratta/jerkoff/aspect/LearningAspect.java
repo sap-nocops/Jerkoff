@@ -4,6 +4,7 @@
 package it.fratta.jerkoff.aspect;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -19,6 +20,7 @@ import it.fratta.jerkoff.converter.Converter;
 import it.fratta.jerkoff.converter.impl.GsonConverterImpl;
 import it.fratta.jerkoff.mongo.MongoDBDao;
 import it.fratta.jerkoff.mongo.impl.MongoDBDaoImpl;
+import it.fratta.jerkoff.util.LogUtils;
 import it.fratta.jerkoff.util.PropertiesUtils;
 
 /**
@@ -28,7 +30,7 @@ import it.fratta.jerkoff.util.PropertiesUtils;
 @Aspect
 public class LearningAspect {
 
-    private static final Logger LOG = Logger.getLogger(LearningAspect.class);
+    private static Logger LOG;
 
     private MongoDBDao mongo;
     private Converter converter;
@@ -40,9 +42,10 @@ public class LearningAspect {
     public LearningAspect() {
         try {
             Properties prop = PropertiesUtils.loadProperties("META-INF/learning.properties");
+            LOG = LogUtils.getLogger(prop, LearningAspect.class);
             appName = PropertiesUtils.getRequiredProperty(prop, PropertiesUtils.APP_NAME);
             mongo = new MongoDBDaoImpl(prop);
-            converter = new GsonConverterImpl();
+            converter = new GsonConverterImpl(prop);
         } catch (IOException e) {
             LOG.error(e);
         }
@@ -50,13 +53,13 @@ public class LearningAspect {
     
 
     /**
-     * TODO perfezionare pointcut?
      * 
      * @param pjp
      * @throws Throwable
      */
     @Around(value = "execution ( public * *(..)) ")
     public Object around(ProceedingJoinPoint pjp) throws Throwable {
+        LOG.info("around: " + pjp.getSignature().toLongString());
         Map<String, Object> map = new HashMap<String, Object>();
         boolean ok = true;
         try {
@@ -88,6 +91,7 @@ public class LearningAspect {
             map.put("argsBefore", converter.objectToJsonString(pjp.getArgs()));
             map.put("thisBefore", converter.objectToJsonString(pjp.getThis()));
             map.put("targetBefore", converter.objectToJsonString(pjp.getTarget()));
+            map.put("dataInserimento", Calendar.getInstance().getTime());
         } catch (Exception e) {
             LOG.debug(e);
             ok = false;

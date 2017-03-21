@@ -21,6 +21,9 @@ public class PropertiesUtils {
 	public static final String TARGET_FOLDER = "gen.targetFolder";
 	public static final String TEST_BASE_PACKAGE = "test.basePackage";
 	public static final String TEST_BASE_CLASS = "test.baseClass";
+    public static final String LOG_DIR = "log4j.dir";
+    public static final String LOG_PATTERN = "log4j.pattern";
+    public static final String LOG_LEVEL = "log4j.level";
 
 	private PropertiesUtils() {
 		// empty constructor

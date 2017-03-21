@@ -1,0 +1,22 @@
+<aspectj>
+
+	<weaver options="-verbose">
+		<include within="it.fratta.jerkoff.aspect.*" />
+		<!-- inserire i package da testare -->
+		<include within="it.eng.sibec.web..*" />
+		<exclude within="it.eng.sibec.web.menu..*" />
+	</weaver>
+
+	<!-- aspect Jerkoff -->
+	<aspects>
+
+		<aspect name="it.fratta.jerkoff.aspect.LearningAspect" />
+
+		<concrete-aspect name="MyAspect">
+			<around pointcut="execution ( public * *(..))" invokeClass="it.fratta.jerkoff.aspect.LogAspect"
+				invokeMethod="log(ProceedingJoinPoint pjp)" />
+		</concrete-aspect>
+	</aspects>
+
+
+</aspectj>

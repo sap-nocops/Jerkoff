@@ -15,7 +15,8 @@ import com.squareup.javapoet.TypeSpec;
 
 import it.fratta.jerkoff.mongo.MongoDBDao;
 import it.fratta.jerkoff.mongo.impl.MongoDBDaoImpl;
-import it.fratta.jerkoff.util.PojoCreatorUtils;
+import it.fratta.jerkoff.poet.PojoCreator;
+import it.fratta.jerkoff.poet.impl.PojoCreatorImpl;
 import it.fratta.jerkoff.util.PropertiesUtils;
 
 /**
@@ -24,17 +25,18 @@ import it.fratta.jerkoff.util.PropertiesUtils;
  */
 public class MainTest {
 
-	private static final Logger LOG = Logger.getLogger(MainTest.class);
+    private static final Logger LOG = Logger.getLogger(MainTest.class);
 
-	@Test
-	public void test() throws IOException {
-		Properties prop = PropertiesUtils.loadProperties("META-INF/generator.properties");
-		File sourcePath = new File(prop.getProperty("gen.targetFolder"));
-		Class<?> clazz = ClassUnderTest.class;
-		MongoDBDao mongo = new MongoDBDaoImpl(prop);
-		LOG.info("Creating tests for public methods of " + clazz.getSimpleName());
-		TypeSpec classTest = PojoCreatorUtils.getTypeSpec(clazz, prop, mongo);
-		PojoCreatorUtils.writeJavaFile(sourcePath, clazz, classTest);
-	}
+    @Test
+    public void test() throws IOException {
+        Properties prop = PropertiesUtils.loadProperties("META-INF/generator.properties");
+        File sourcePath = new File(prop.getProperty("gen.targetFolder"));
+        Class<?> clazz = ClassUnderTest.class;
+        MongoDBDao mongo = new MongoDBDaoImpl(prop);
+        PojoCreator creator = new PojoCreatorImpl(prop, mongo);
+        LOG.info("Creating tests for public methods of " + clazz.getSimpleName());
+        TypeSpec classTest = creator.getTypeSpec(clazz);
+        creator.writeJavaFile(sourcePath, clazz, classTest);
+    }
 
 }

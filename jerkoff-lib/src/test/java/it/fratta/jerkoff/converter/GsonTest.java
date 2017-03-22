@@ -21,6 +21,7 @@ import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
+import com.google.gson.graph.GraphAdapterBuilder;
 import com.google.gson.reflect.TypeToken;
 
 /**
@@ -139,6 +140,60 @@ public class GsonTest {
         }
     }
 
+    @Test
+    public void testRec() {
+        try {
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            // register custom adapter from configuration
+            new GraphAdapterBuilder().addType(A.class).addType(B.class)
+                    .registerOn(gsonBuilder);
+//            gsonBuilder.registerTypeHierarchyAdapter(Object.class,
+//                    new ObjectSerializer(gsonBuilder.create()));
+//            gsonBuilder.registerTypeHierarchyAdapter(Object.class,
+//                    new ObjectDeserializer(gsonBuilder.create()));
+            Gson gson = gsonBuilder.create();
+
+            A a = new A();
+            B b = new B();
+            a.setB(b);
+            b.setA(a);
+
+            String json = gson.toJson(a);
+            LOG.info("json: " + json);
+            A a2 = gson.fromJson(json, a.getClass());
+            LOG.info("a: " + a2);
+
+        } catch (Exception e) {
+            LOG.error(e);
+        }
+    }
+
+    class A {
+
+        private B b;
+
+        public B getB() {
+            return b;
+        }
+
+        public void setB(B b) {
+            this.b = b;
+        }
+    }
+
+    class B {
+
+        private A a;
+
+        public A getA() {
+            return a;
+        }
+
+        public void setA(A a) {
+            this.a = a;
+        }
+    }
+
     class BagOfPrimitives {
 
         private int value1 = 1;
@@ -178,90 +233,6 @@ public class GsonTest {
         @Override
         public String toString() {
             return String.format("(name=%s, source=%s)", name, source);
-        }
-    }
-
-    private class ObjectDeserializer implements JsonDeserializer<Object> {
-
-        private Gson gson;
-
-        /**
-         * 
-         * @param gson
-         */
-        public ObjectDeserializer(Gson gson) {
-            this.gson = gson;
-        }
-
-        public Object deserialize(JsonElement json, Type typeOfT,
-                JsonDeserializationContext context) throws JsonParseException {
-            if (json.isJsonObject()) {
-                JsonObject obj = json.getAsJsonObject();
-                try {
-                    typeOfT = Class.forName(obj.get("class").getAsString());
-                } catch (ClassNotFoundException e) {
-                    throw new JsonParseException(e);
-                }
-                JsonElement prim = obj.get("primitive");
-                if (null != prim && prim.getAsBoolean()) {
-                    json = obj.get("value");
-                }
-            } else /*
-                    * TODO errore durante il cast da Object[] to T[]
-                    * if (json.isJsonArray()) { JsonParser parser = new
-                    * JsonParser(); JsonArray array =json.getAsJsonArray();
-                    * Object[] arr = new Object[array.size()]; for(int i = 0; i
-                    * < array.size(); i++) { arr[i] =
-                    * context.deserialize(array.get(i),
-                    * array.get(i).getClass()); } return arr; }
-                    */ {
-                LOG.info(typeOfT);
-            }
-            return gson.fromJson(json, typeOfT);
-        }
-    }
-
-    private class ObjectSerializer implements JsonSerializer<Object> {
-
-        private Gson gson;
-
-        /**
-         * 
-         * @param gson
-         */
-        public ObjectSerializer(Gson gson) {
-            this.gson = gson;
-        }
-
-        public JsonElement serialize(Object src, Type typeOfSrc, JsonSerializationContext context) {
-            JsonElement elem = null;
-            if (Iterable.class.isAssignableFrom(src.getClass())) {
-                JsonArray array = new JsonArray();
-                for (Object obj : (Iterable<?>) src) {
-                    array.add(context.serialize(obj));
-                }
-                elem = array;
-            } else if (src.getClass().isArray()) {
-                JsonArray array = new JsonArray();
-                for (Object obj : (Object[]) src) {
-                    array.add(context.serialize(obj));
-                }
-                elem = array;
-            } else {
-                elem = gson.toJsonTree(src);
-                if (elem.isJsonObject()) {
-                    JsonObject obj = elem.getAsJsonObject();
-                    obj.addProperty("class", ((Class<?>) typeOfSrc).getName());
-                    elem = obj;
-                } else {
-                    JsonObject obj = new JsonObject();
-                    obj.add("value", elem);
-                    obj.addProperty("class", ((Class<?>) typeOfSrc).getName());
-                    obj.addProperty("primitive", true);
-                    elem = obj;
-                }
-            }
-            return elem;
         }
     }
 

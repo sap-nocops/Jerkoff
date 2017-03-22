@@ -4,7 +4,7 @@
 		<include within="it.fratta.jerkoff.aspect.*" />
 		<!-- inserire i package da testare -->
 		<include within="it.eng.sibec.web..*" />
-		<exclude within="it.eng.sibec.web.menu..*" />
+		<exclude within="it.eng.sibec.web.listener..*" />
 	</weaver>
 
 	<!-- aspect Jerkoff -->

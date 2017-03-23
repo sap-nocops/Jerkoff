@@ -30,7 +30,9 @@ import it.fratta.jerkoff.util.PropertiesUtils;
 @Aspect
 public class LearningAspect {
 
-    private static Logger LOG;
+    private static final String LEARNING_PROPERTIES = "META-INF/learning.properties";
+
+	private static Logger LOG;
 
     private MongoDBDao mongo;
     private Converter converter;
@@ -41,7 +43,7 @@ public class LearningAspect {
      */
     public LearningAspect() {
         try {
-            Properties prop = PropertiesUtils.loadProperties("META-INF/learning.properties");
+            Properties prop = PropertiesUtils.loadProperties(LEARNING_PROPERTIES);
             LOG = LogUtils.getLogger(prop, LearningAspect.class);
             appName = PropertiesUtils.getRequiredProperty(prop, PropertiesUtils.APP_NAME);
             mongo = new MongoDBDaoImpl(prop);

@@ -5,11 +5,15 @@ package it.fratta.jerkoff.converter;
 
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
+import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
+import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 /**
@@ -17,6 +21,8 @@ import com.google.gson.stream.JsonWriter;
  *
  */
 public class ObjectTypeAdapterFactory implements TypeAdapterFactory {
+    
+    private static final Logger LOG = Logger.getLogger(ObjectTypeAdapterFactory.class);
 
     /*
      * (non-Javadoc)
@@ -25,29 +31,73 @@ public class ObjectTypeAdapterFactory implements TypeAdapterFactory {
      * com.google.gson.reflect.TypeToken)
      */
     @Override
-    public <T> TypeAdapter<T> create(Gson gson, TypeToken<T> type) {
+    public <T> TypeAdapter<T> create(final Gson gson, TypeToken<T> type) {
         final TypeAdapter<T> delegate = gson.getDelegateAdapter(this, type);
-        return new TypeAdapter<T>() {
+        return new MyTypeAdapter<T>(delegate, gson);
+    }
 
-            public void write(JsonWriter out, T value) throws IOException {
-                out.beginObject();
-                out.name("class");
-                out.value(value.getClass().getName());
-                out.name("value");
-                delegate.write(out, value);
-                out.endObject();
-            }
+    class MyTypeAdapter<T> extends TypeAdapter<T> {
 
-            public T read(JsonReader in) throws IOException {
-                in.beginObject();
-                in.nextName();
-                in.nextString();
-                in.nextName();
-                T res = delegate.read(in);
-                in.endObject();
-                return res;
+        private TypeAdapter<T> delegate;
+        private Gson gson;
+
+        public MyTypeAdapter(TypeAdapter<T> delegate, Gson gson) {
+            super();
+            this.delegate = delegate;
+            this.gson = gson;
+        }
+
+        public void write(JsonWriter out, T value) throws IOException {
+            out.beginObject();
+            out.name("class");
+            out.value(value.getClass().getName());
+            out.name("value");
+            delegate.write(out, value);
+            out.endObject();
+        }
+
+        @SuppressWarnings("unchecked")
+        public T read(JsonReader in) throws IOException {
+            Object res;
+            in.beginObject();
+            LOG.info(in.nextName());
+            String clazzName = in.nextString();
+            LOG.info(clazzName);
+            LOG.info(in.nextName());
+            try {
+                Class<?> typeOfT = Class.forName(clazzName);
+                // TypeAdapter<?> del = gson.getDelegateAdapter(null,
+                // TypeToken.get(typeOfT));
+                TypeAdapter<?> del = gson.getAdapter(typeOfT);
+                if (del instanceof MyTypeAdapter) {
+                    del = delegate;
+                } else {
+                    in.beginObject();
+                }
+                JsonToken peek = in.peek();
+                switch (peek) {
+                    case STRING:
+                        res = in.nextString();
+                        break;
+                    case BOOLEAN:
+                        res = in.nextBoolean();
+                        break;
+                    case NUMBER:
+                        res = in.nextInt();
+                        break;
+
+                    default:
+                        res = (T) del.read(in);
+                }
+
+            } catch (ClassNotFoundException e) {
+                throw new JsonParseException(e);
             }
-        };
+            // res = delegate.read(in);
+            in.endObject();
+            return (T) res;
+        }
+
     }
 
 }

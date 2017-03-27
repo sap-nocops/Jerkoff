@@ -147,10 +147,11 @@ public class GsonTest {
     public void testDel() {
         try {
             GsonBuilder gsonBuilder = new GsonBuilder();
-            // register custom adapter from configuration
-            new GraphAdapterBuilder().addType(A.class).addType(B.class).registerOn(gsonBuilder);
             ObjectTypeAdapterFactory del = new ObjectTypeAdapterFactory();
             gsonBuilder.registerTypeAdapterFactory(del);
+            // register custom adapter from configuration
+            new GraphAdapterBuilder().addType(A.class).addType(B.class).registerOn(gsonBuilder);
+            
             Gson gson = gsonBuilder.create();
 
             BagOfPrimitives obj = new BagOfPrimitives(66);

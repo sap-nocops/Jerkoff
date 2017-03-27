@@ -3,6 +3,8 @@
  */
 package it.fratta.jerkoff.converter;
 
+import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +25,7 @@ import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.google.gson.graph.GraphAdapterBuilder;
 import com.google.gson.reflect.TypeToken;
+import com.google.gson.stream.JsonWriter;
 
 /**
  * @author ElGansoSnowhiteDurden
@@ -141,16 +144,81 @@ public class GsonTest {
     }
 
     @Test
+    public void testDel() {
+        try {
+            GsonBuilder gsonBuilder = new GsonBuilder();
+            // register custom adapter from configuration
+            new GraphAdapterBuilder().addType(A.class).addType(B.class).registerOn(gsonBuilder);
+            ObjectTypeAdapterFactory del = new ObjectTypeAdapterFactory();
+            gsonBuilder.registerTypeAdapterFactory(del);
+            Gson gson = gsonBuilder.create();
+
+            BagOfPrimitives obj = new BagOfPrimitives(66);
+            String json = gson.toJson(obj);
+            LOG.info("json: " + json);
+            BagOfPrimitives obj2 = gson.fromJson(json, BagOfPrimitives.class);
+            LOG.info("obj2: " + obj2);
+            TypeToken<Foo<Integer>> fooIntTok = new TypeToken<Foo<Integer>>() {
+            };
+            Foo<Integer> foo = new Foo<Integer>();
+            foo.value = 1;
+            json = gson.toJson(foo);
+            LOG.info("json: " + json);
+            Foo<Integer> fooDes = gson.fromJson(json, fooIntTok.getType());
+            LOG.info("fooDes: " + fooDes);
+
+            A a = new A();
+            B b = new B();
+            a.setName("puppa");
+            a.setB(b);
+            b.setA(a);
+
+            json = gson.toJson(a);
+            LOG.info("json: " + json);
+            A a2 = gson.fromJson(json, a.getClass());
+            LOG.info("a: " + a2);
+            Comparable comp = new Long(1L);
+            BagOfCollections objC = new BagOfCollections();
+            objC.collection = new ArrayList();
+            objC.collection.add("hello");
+            objC.collection.add(comp);
+            objC.collection.add(new Event("GREETINGS", "guest"));
+            json = gson.toJson(objC);
+            LOG.info("json: " + json);
+            BagOfCollections objC2 = gson.fromJson(json, BagOfCollections.class);
+            LOG.info("objC2: " + objC2);
+
+        } catch (Exception e) {
+            LOG.error(e);
+        }
+    }
+
+    @Test
+    public void testWr() {
+        try {
+            Writer wr = new StringWriter();
+            JsonWriter out = new JsonWriter(wr);
+            out.beginObject();
+            out.name("class");
+            out.value(this.getClass().getName());
+            out.endObject();
+            out.close();
+            LOG.info("json: " + wr.toString());
+        } catch (Exception e) {
+            LOG.error(e);
+        }
+    }
+
+    @Test
     public void testRec() {
         try {
             GsonBuilder gsonBuilder = new GsonBuilder();
             // register custom adapter from configuration
-            new GraphAdapterBuilder().addType(A.class).addType(B.class)
-                    .registerOn(gsonBuilder);
-//            gsonBuilder.registerTypeHierarchyAdapter(Object.class,
-//                    new ObjectSerializer(gsonBuilder.create()));
-//            gsonBuilder.registerTypeHierarchyAdapter(Object.class,
-//                    new ObjectDeserializer(gsonBuilder.create()));
+            new GraphAdapterBuilder().addType(A.class).addType(B.class).registerOn(gsonBuilder);
+            // gsonBuilder.registerTypeHierarchyAdapter(Object.class,
+            // new ObjectSerializer(gsonBuilder.create()));
+            // gsonBuilder.registerTypeHierarchyAdapter(Object.class,
+            // new ObjectDeserializer(gsonBuilder.create()));
             Gson gson = gsonBuilder.create();
 
             A a = new A();
@@ -171,6 +239,15 @@ public class GsonTest {
     class A {
 
         private B b;
+        private String name;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
 
         public B getB() {
             return b;
@@ -202,6 +279,10 @@ public class GsonTest {
 
         BagOfPrimitives() {
             // no-args constructor
+        }
+
+        BagOfPrimitives(int val) {
+            value1 = val;
         }
     }
 

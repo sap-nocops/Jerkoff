@@ -69,7 +69,7 @@ public class ObjectTypeAdapterFactory implements TypeAdapterFactory {
 //                 TypeAdapter<?> del = gson.getDelegateAdapter(new ObjectTypeAdapterFactory(),
 //                 );
                 TypeAdapter<?> del = gson.getAdapter(TypeToken.get(typeOfT));
-                LOG.info("ta: " + del + "taDel: " + delegate + " tt: " + TypeToken.get(typeOfT));
+                LOG.info("ta: " + del + " taDel: " + delegate + " tt: " + TypeToken.get(typeOfT));
                 if (typeOfT.isArray()) {
                     del = com.google.gson.internal.bind.ArrayTypeAdapter.FACTORY.create(gson, TypeToken.get(typeOfT));
                 } else {

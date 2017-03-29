@@ -21,7 +21,7 @@ import com.google.gson.stream.JsonWriter;
  *
  */
 public class ObjectTypeAdapterFactory implements TypeAdapterFactory {
-    
+
     private static final Logger LOG = Logger.getLogger(ObjectTypeAdapterFactory.class);
 
     /*
@@ -66,14 +66,16 @@ public class ObjectTypeAdapterFactory implements TypeAdapterFactory {
             LOG.info(in.nextName());
             try {
                 Class<?> typeOfT = Class.forName(clazzName);
-                // TypeAdapter<?> del = gson.getDelegateAdapter(null,
-                // TypeToken.get(typeOfT));
-                TypeAdapter<?> del = gson.getAdapter(typeOfT);
-                if (del instanceof MyTypeAdapter) {
-                    del = delegate;
+//                 TypeAdapter<?> del = gson.getDelegateAdapter(new ObjectTypeAdapterFactory(),
+//                 );
+                TypeAdapter<?> del = gson.getAdapter(TypeToken.get(typeOfT));
+                LOG.info("ta: " + del + "taDel: " + delegate + " tt: " + TypeToken.get(typeOfT));
+                if (typeOfT.isArray()) {
+                    del = com.google.gson.internal.bind.ArrayTypeAdapter.FACTORY.create(gson, TypeToken.get(typeOfT));
                 } else {
-                    in.beginObject();
+                    del = delegate; 
                 }
+                
                 JsonToken peek = in.peek();
                 switch (peek) {
                     case STRING:
@@ -83,7 +85,13 @@ public class ObjectTypeAdapterFactory implements TypeAdapterFactory {
                         res = in.nextBoolean();
                         break;
                     case NUMBER:
-                        res = in.nextInt();
+                        if (Long.class.equals(typeOfT)) {
+                            res = in.nextLong();
+                        } else if (Integer.class.equals(typeOfT)) {
+                            res = in.nextInt();
+                        } else {
+                            res = in.nextDouble();
+                        }
                         break;
 
                     default:

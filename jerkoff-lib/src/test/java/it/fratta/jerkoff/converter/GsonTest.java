@@ -5,8 +5,10 @@ package it.fratta.jerkoff.converter;
 
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
@@ -39,30 +41,60 @@ public class GsonTest {
     @Test
     public void test() {
         try {
+//            GsonBuilder gsonBuilder = new GsonBuilder();
+//            // register custom adapter from configuration
+//            gsonBuilder.registerTypeHierarchyAdapter(Object.class,
+//                    new ObjectSerializer(gsonBuilder.create()));
+//            gsonBuilder.registerTypeHierarchyAdapter(Object.class,
+//                    new ObjectDeserializer(gsonBuilder.create()));
+//            Gson gson = gsonBuilder.create();
+            
             GsonBuilder gsonBuilder = new GsonBuilder();
+            ObjectTypeAdapterFactory del = new ObjectTypeAdapterFactory();
+            gsonBuilder.registerTypeAdapterFactory(del);
             // register custom adapter from configuration
-            gsonBuilder.registerTypeHierarchyAdapter(Object.class,
-                    new ObjectSerializer(gsonBuilder.create()));
-            gsonBuilder.registerTypeHierarchyAdapter(Object.class,
-                    new ObjectDeserializer(gsonBuilder.create()));
+            new GraphAdapterBuilder().addType(A.class).addType(B.class).registerOn(gsonBuilder);
+            
             Gson gson = gsonBuilder.create();
-            int oneInt = gson.fromJson("1", int.class);
+            int one = 1;
+            String json = gson.toJson(one);
+            LOG.info("json: " + json);
+            int oneInt = gson.fromJson(json, int.class);
             LOG.info("oneInt: " + oneInt);
-            Integer oneInteger = gson.fromJson("1", Integer.class);
+            Integer oneInteg = 1;
+            json = gson.toJson(oneInteg);
+            LOG.info("json: " + json);
+            Integer oneInteger = gson.fromJson(json, Integer.class);
             LOG.info("oneInteger: " + oneInteger);
-            Long oneLong = gson.fromJson("1", Long.class);
+            long oneL = 1L;
+            json = gson.toJson(oneL);
+            LOG.info("json: " + json);
+            long oneLong = gson.fromJson(json, long.class);
+            Long oneLo = 1L;
+            json = gson.toJson(oneLo);
+            LOG.info("json: " + json);
+            Long onelong = gson.fromJson(json, Long.class);
             LOG.info("oneLong: " + oneLong);
-            Boolean falseBoolean = gson.fromJson("false", Boolean.class);
+            Boolean falseB = Boolean.FALSE;
+            json = gson.toJson(falseB);
+            LOG.info("json: " + json);
+            Boolean falseBoolean = gson.fromJson(json, Boolean.class);
             LOG.info("falseBoolean: " + falseBoolean);
-            String str = gson.fromJson("\"abc\"", String.class);
+            String stabc = "abc";
+            json = gson.toJson(stabc);
+            LOG.info("json: " + json);
+            String str = gson.fromJson(json, String.class);
             LOG.info("str: " + str);
-            String[] arrayStr = gson.fromJson("[\"abc\"]", String[].class);
+            String[] stArr = {"abc", "bcb"};
+            json = gson.toJson(stArr);
+            LOG.info("json: " + json);
+            String[] arrayStr = gson.fromJson(json, String[].class);
             LOG.info("arrayStr: " + arrayStr);
 
             LOG.info("ex: " + new IllegalAccessError().getClass().getName());
 
             Object object = new Object();
-            String json = gson.toJson(object);
+            json = gson.toJson(object);
             LOG.info("json: " + json);
             Object object2 = gson.fromJson(json, Object.class);
             LOG.info("object2: " + object2);
@@ -72,8 +104,10 @@ public class GsonTest {
             LOG.info("json: " + json);
             BagOfPrimitives obj2 = gson.fromJson(json, BagOfPrimitives.class);
             LOG.info("obj2: " + obj2);
-
-            json = "[1,2,3,4,5]";
+            Integer[] arre = new Integer[] {1,2,3,4,5};
+            Collection<Integer> arrColl = Arrays.asList(arre);
+            json = gson.toJson(arrColl);
+            LOG.info("json: " + json);
             Type collectionType = new TypeToken<Collection<Integer>>() {
             }.getType();
             Collection<Integer> ints2 = gson.fromJson(json, collectionType);
@@ -94,18 +128,19 @@ public class GsonTest {
             json = gson.toJson(collection.toArray());
             LOG.info("json: " + json);
             JsonParser parser = new JsonParser();
-            JsonArray array = parser.parse(json).getAsJsonArray();
-            String message = gson.fromJson(array.get(0), String.class);
-            Integer number = gson.fromJson(array.get(1), Integer.class);
-            Event event = gson.fromJson(array.get(2), Event.class);
-            LOG.info("message: " + message);
-            LOG.info("number: " + number);
-            LOG.info("event: " + event);
+//            JsonArray array = parser.parse(json).getAsJsonArray();
+//            String message = gson.fromJson(array.get(0), String.class);
+//            Integer number = gson.fromJson(array.get(1), Integer.class);
+//            Event event = gson.fromJson(array.get(2), Event.class);
+//            LOG.info("message: " + message);
+//            LOG.info("number: " + number);
+//            LOG.info("event: " + event);
 
             Object[] arrayObj = gson.fromJson(json, Object[].class);
             LOG.info("arrayObj: " + arrayObj);
 
-            json = "{\"value1\":1,\"value2\":\"abc\", \"class\":\"it.fratta.jerkoff.converter.GsonTest$BagOfPrimitives\"}";
+            BagOfPrimitives obj33 = new BagOfPrimitives();
+            json = gson.toJson(obj33);
             BagOfPrimitives obj3 = gson.fromJson(json, BagOfPrimitives.class);
             LOG.info("obj3: " + obj3);
             JsonElement elem = parser.parse(json);
@@ -139,7 +174,7 @@ public class GsonTest {
             LOG.info("objC2: " + objC2);
 
         } catch (Exception e) {
-            LOG.error(e);
+            LOG.error("",e);
         }
     }
 
@@ -209,7 +244,7 @@ public class GsonTest {
             LOG.error(e);
         }
     }
-
+    
     @Test
     public void testRec() {
         try {

@@ -11,8 +11,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import it.fratta.jerkoff.converter.Converter;
-import it.fratta.jerkoff.converter.ObjectDeserializer;
-import it.fratta.jerkoff.converter.ObjectSerializer;
+import it.fratta.jerkoff.converter.ObjectTypeAdapterFactory;
 import it.fratta.jerkoff.util.LogUtils;
 
 /**
@@ -31,10 +30,10 @@ public class GsonConverterImpl implements Converter {
 	 */
 	public GsonConverterImpl(Properties prop) {
 	    LOG = LogUtils.getLogger(prop, GsonConverterImpl.class);
-		GsonBuilder gsonBuilder = new GsonBuilder();
-		// register custom adapter from configuration
-		gsonBuilder.registerTypeHierarchyAdapter(Object.class, new ObjectSerializer(gsonBuilder.create()));
-		gsonBuilder.registerTypeHierarchyAdapter(Object.class, new ObjectDeserializer(gsonBuilder.create()));
+	    GsonBuilder gsonBuilder = new GsonBuilder();
+        ObjectTypeAdapterFactory del = new ObjectTypeAdapterFactory();
+        gsonBuilder.registerTypeAdapterFactory(del);
+        // register custom adapter from configuration
 		gson = gsonBuilder.create();
 	}
 

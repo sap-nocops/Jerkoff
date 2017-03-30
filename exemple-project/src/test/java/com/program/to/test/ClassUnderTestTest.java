@@ -1,6 +1,6 @@
 package com.program.to.test;
 
-import it.fratta.jerkoff.test.GenericTest;
+
 import javax.annotation.Generated;
 import org.junit.Test;
 

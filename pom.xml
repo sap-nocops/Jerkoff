@@ -11,6 +11,7 @@
 		<module>jerkoff-lib</module>
 		<module>jerkoff-generator</module>
 		<module>jerkoff-learning</module>
+		<module>exemple-project</module>
 	</modules>
 
 </project>

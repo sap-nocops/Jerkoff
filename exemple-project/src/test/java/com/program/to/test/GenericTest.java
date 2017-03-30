@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.fratta.jerkoff.test;
+package com.program.to.test;
 
 /**
  * @author ElGansoSnowhiteDurden

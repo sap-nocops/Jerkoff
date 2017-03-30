@@ -1,7 +1,8 @@
+package com.program.to.test;
 /**
  * 
  */
-package com.program.to.test;
+
 
 import org.apache.log4j.Logger;
 

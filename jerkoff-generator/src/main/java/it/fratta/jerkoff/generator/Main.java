@@ -25,7 +25,7 @@ import it.fratta.jerkoff.util.PropertiesUtils;
  *
  */
 
-@Mojo(name = "main")
+@Mojo(name = "generate-test")
 public class Main extends AbstractMojo {
 
     /**
@@ -51,7 +51,7 @@ public class Main extends AbstractMojo {
                 TypeSpec classTest = creator.getTypeSpec(clazz);
                 creator.writeJavaFile(sourcePath, clazz, classTest);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             getLog().error(e);
             throw new MojoExecutionException(e.getMessage());
         }

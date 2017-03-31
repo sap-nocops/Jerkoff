@@ -40,11 +40,17 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-core</artifactId>
+			<version>3.2.5</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
 		<plugins>
-		
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -54,10 +60,10 @@
 					<source>1.7</source>
 					<target>1.7</target>
 					<executable>${JAVA_1_7_HOME}/bin/javac</executable>
-          			<compilerVersion>1.7</compilerVersion>
+					<compilerVersion>1.7</compilerVersion>
 				</configuration>
 			</plugin>
-		
+
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-plugin-plugin</artifactId>

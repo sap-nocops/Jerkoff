@@ -21,6 +21,8 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
+
+
 	</dependencies>
 
 	<build>
@@ -29,6 +31,13 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.6.1</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.mongodb</groupId>
+						<artifactId>mongo-java-driver</artifactId>
+						<version>3.4.2</version>
+					</dependency>
+				</dependencies>
 				<configuration>
 					<complianceLevel>1.7</complianceLevel>
 					<source>1.7</source>
@@ -49,6 +58,9 @@
 						</goals>
 					</execution>
 				</executions>
+				<configuration>
+					<propertyfile>${basedir}/src/main/resources/META-INF/generator.properties</propertyfile>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

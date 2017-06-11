@@ -20,6 +20,10 @@ public class ObjectDeserializer implements JsonDeserializer<Object> {
 
 	private Gson gson;
 
+	public ObjectDeserializer() {
+		this.gson = new Gson();
+	}
+	
 	/**
 	 * 
 	 * @param gson

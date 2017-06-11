@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 import org.apache.log4j.Logger;
+import org.apache.maven.plugin.MojoExecutionException;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -31,7 +32,7 @@ public class MainTest {
     @Ignore
     public void test() throws IOException {
         Properties prop = PropertiesUtils.loadProperties("META-INF/generator.properties");
-        File sourcePath = new File(prop.getProperty("gen.targetFolder"));
+        File sourcePath = new File(prop.getProperty(PropertiesUtils.TARGET_FOLDER));
         Class<?> clazz = Integer.class;
         MongoDBDao mongo = new MongoDBDaoImpl(prop);
         PojoCreator creator = new PojoCreatorImpl(prop, mongo);
@@ -39,5 +40,10 @@ public class MainTest {
         TypeSpec classTest = creator.getTypeSpec(clazz);
         creator.writeJavaFile(sourcePath, clazz, classTest);
     }
-
+    
+    @Test
+    public void testExecute() throws MojoExecutionException {
+		Main main = new Main();
+		main.execute();
+    }
 }

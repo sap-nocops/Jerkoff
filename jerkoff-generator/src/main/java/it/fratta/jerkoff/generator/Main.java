@@ -41,6 +41,7 @@ public class Main extends AbstractMojo {
      */
     public void execute() throws MojoExecutionException {
         getLog().info("start main");
+        propertyfile = "/home/sap/workspace/Jerkoff/exemple-project/src/main/resources/META-INF/generator.properties";
         try {
             getLog().info("load " + propertyfile);
             Properties prop = PropertiesUtils.loadPropertiesFromAbs(propertyfile);

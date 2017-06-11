@@ -16,6 +16,8 @@ import org.bson.Document;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
@@ -82,6 +84,16 @@ public class PojoCreatorImpl implements PojoCreator {
 				classTestBuilder.addMethod(methodSpec);
 			}
 		}
+		classTestBuilder.addMethod(getDeserializeMethod(clazz));
+	}
+
+	private MethodSpec getDeserializeMethod(Class<?> clazz) {
+		MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder("deserialize");
+		methodBuilder.addParameter(String.class, "json", Modifier.PRIVATE);
+		methodBuilder.addStatement("JsonParser parser = new JsonParser()");
+		methodBuilder.addStatement("JsonObject o = parser.parse(json).getAsJsonObject()");
+		methodBuilder.addStatement("return new Gson().fromJson(o, " + clazz.getSimpleName() + ".class)");
+		return methodBuilder.build();
 	}
 
 	/**
@@ -154,9 +166,7 @@ public class PojoCreatorImpl implements PojoCreator {
 		if (java.lang.reflect.Modifier.isStatic(method.getModifiers())) {
 			return clazz.getSimpleName();
 		}
-		Class<?> methodReturnType = method.getReturnType();
-		String returnValue = methodInputs.getString("returnValue");
-		newInstance(clazz, methodBuilder, methodReturnType, returnValue);
+		newInstance(clazz, methodBuilder, method, methodInputs);
 		return getInstanceVariableName(clazz);
 	}
 
@@ -213,16 +223,26 @@ public class PojoCreatorImpl implements PojoCreator {
 	 * 
 	 * @param clazz
 	 * @param methodBuilder
+	 * @param method
 	 * @param methodInputs
 	 */
-	private void newInstance(Class<?> clazz, MethodSpec.Builder methodBuilder, Class<?> methodReturnType,
-			String methodReturnValue) {
+	private void newInstance(Class<?> clazz, MethodSpec.Builder methodBuilder, Method method, Document methodInputs) {
 		// TODO here we need to evaluate combination between constructors and
 		// setter to see if it is possible to instantiate the object properly,
 		// otherwise direct deserialization must be done
-		methodBuilder.addStatement(new StringBuilder(clazz.getSimpleName()).append(" ")
-				.append(getInstanceVariableName(clazz)).append(" = new ").append(clazz.getSimpleName()).append("(")
-				.append(getValueWithApexIfRequired(methodReturnType, methodReturnValue)).append(")").toString());
+		
+		// methodBuilder.addStatement(new
+		// StringBuilder(clazz.getSimpleName()).append(" ")
+		// .append(getInstanceVariableName(clazz)).append(" = new
+		// ").append(clazz.getSimpleName()).append("(")
+		// .append(getValueWithApexIfRequired(methodReturnType,
+		// methodReturnValue)).append(")").toString());
+		Class<?> methodReturnType = method.getReturnType();
+		String returnValue = methodInputs.getString("returnValue");
+//		methodBuilder.addStatement("ObjectDeserializer objDes = new ObjectDeserializer();");
+		methodBuilder.addStatement("String json = \"" + methodInputs.toJson() + "\"");
+		methodBuilder.addStatement(clazz.getSimpleName() + " " + getInstanceVariableName(clazz)
+				+ " = getInstance(json, " + clazz.getSimpleName() + ".class)");
 	}
 
 	/**
@@ -302,7 +322,8 @@ public class PojoCreatorImpl implements PojoCreator {
 		for (Class<?> parameterClass : method.getParameterTypes()) {
 			String parameterName = getInstanceVariableName(parameterClass) + count;
 			params += "," + parameterName;
-			methodBuilder.addStatement(parameterClass.getName() + " " + parameterName + " = " + methodArgsValues[count]);
+			methodBuilder
+					.addStatement(parameterClass.getName() + " " + parameterName + " = " + methodArgsValues[count]);
 			count++;
 		}
 		if (params.startsWith(",")) {
